@@ -1,6 +1,6 @@
 package com.jvc.simplecrud.repository;
 
-import com.jvc.simplecrud.model.Product;
+import com.jvc.simplecrud.model.product.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +21,11 @@ public class ProductRepository {
 
 
     public Product findByID(int id) {
-        return products.get(id);
+
+        return products.stream()
+                .filter(
+                        product -> product.getId() == id
+                ).findFirst().orElse(null);
     }
 
 
@@ -30,19 +34,25 @@ public class ProductRepository {
         return product;
     }
 
-    public Product update(Product product) {
-       int index = products.indexOf(product);
+    public Product update(Product newProduct) {
 
-        Product updatedProduct = new Product();
-        updatedProduct.setId(product.getId());
-        updatedProduct.setName(product.getName());
-        updatedProduct.setPrice(product.getPrice());
-        updatedProduct.setDescrption(product.getDescrption());
-        updatedProduct.setStock(product.getStock());
+       if(newProduct != null) {
+           int index = products.stream().filter(
+                   product -> product.equals(newProduct)
+               ).findFirst().hashCode();
 
-        products.set(index, updatedProduct);
+           Product updatedProduct = new Product();
+           updatedProduct.setId(newProduct.getId());
+           updatedProduct.setName(newProduct.getName());
+           updatedProduct.setPrice(newProduct.getPrice());
+           updatedProduct.setDescription(newProduct.getDescription());
+           updatedProduct.setStock(newProduct.getStock());
 
-        return updatedProduct;
+           products.set(index, updatedProduct);
+           return updatedProduct;
+       } else {
+           return null;
+       }
     }
 
     public void delete(int id) {
@@ -58,5 +68,6 @@ public class ProductRepository {
     }
 
     public void deleteById(int id) {
+        products.removeIf(product -> product.getId() == id);
     }
 }
