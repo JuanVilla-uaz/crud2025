@@ -1,5 +1,5 @@
 package com.jvc.simplecrud.service;
-import com.jvc.simplecrud.model.Product;
+import com.jvc.simplecrud.model.product.Product;
 import java.util.List;
 
 public interface ProductService {
@@ -9,5 +9,7 @@ public interface ProductService {
     Product save(Product product);
     Product update(Product product);
     void deleteById(int id);
+
+    Product createRandomProduct();
 
 }
